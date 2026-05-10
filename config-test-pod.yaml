@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: config-test-pod
+spec:
+  containers:
+  - name: test-container
+    image: busybox:latest
+    # 無限ループさせてコンテナが終了しないようにする
+    command: ["/bin/sh", "-c", "sleep 3600"]
+    env:
+      # ConfigMapから環境変数を注入
+      - name: GREETING_MESSAGE
+        valueFrom:
+          configMapKeyRef:
+            name: web-config
+            key: greeting
+      # Secretから環境変数を注入
+      - name: DB_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: db-secret
+            key: password
